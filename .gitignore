@@ -1,0 +1,21 @@
+# Node.js and React
+node_modules/
+build/
+dist/
+*.log
+.env
+
+# Virtual environment
+.venv/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
