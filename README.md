@@ -1,7 +1,3 @@
-Here’s the updated README to include the React frontend and Flask backend setup:
-
----
-
 # Amazon Rekognition Label Detection Application
 
 This application uses the Amazon Rekognition service to detect labels (objects, scenes, or activities) in an image. It consists of two components:
