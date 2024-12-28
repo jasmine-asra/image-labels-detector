@@ -4,15 +4,19 @@ import Results from './components/Results';
 
 const App: React.FC = () => {
   const [labels, setLabels] = useState<any[]>([]);
+  const [annotatedImage, setAnnotatedImage] = useState<string | null>(null);
 
-  const handleDetect = (newLabels: any[]) => {
-    setLabels(newLabels);
+  const handleDetect = (labels: any[], annotatedImage: string) => {
+    setLabels(labels);
+    setAnnotatedImage(annotatedImage);
   };
 
   return (
     <div className="App">
       <FileUpload onDetect={handleDetect} />
-      {labels.length > 0 && <Results labels={labels} />}
+      {labels.length > 0 && (
+        <Results labels={labels} annotatedImage={annotatedImage} />
+      )}
     </div>
   );
 };
