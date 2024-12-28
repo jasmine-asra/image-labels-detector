@@ -25,58 +25,77 @@ interface Label {
 
 interface ResultsProps {
   labels: Label[];
+  annotatedImage: string | null;
 }
 
-const Results: React.FC<ResultsProps> = ({ labels }) => {
+const Results: React.FC<ResultsProps> = ({ labels, annotatedImage }) => {
   return (
-    <div>
+    <div style={{ textAlign: 'center', marginTop: '2rem' }}>
       <h2>Detected Labels</h2>
-      {labels.length === 0 ? (
-        <p>No labels detected.</p>
-      ) : (
-        <ul>
-          {labels.map((label, index) => (
-            <li key={index} style={{ marginBottom: '1rem' }}>
-              <strong>Label: {label.Name}</strong> (Confidence: {label.Confidence.toFixed(2)}%)
-              {label.Instances.length > 0 ? (
-                <div>
-                  <strong>Instances:</strong>
-                  <ul>
-                    {label.Instances.map((instance, i) => (
-                      <li key={i}>
-                        <div>
-                          <strong>Bounding Box:</strong>
-                          <ul>
-                            <li>Top: {instance.BoundingBox.Top.toFixed(2)}</li>
-                            <li>Left: {instance.BoundingBox.Left.toFixed(2)}</li>
-                            <li>Width: {instance.BoundingBox.Width.toFixed(2)}</li>
-                            <li>Height: {instance.BoundingBox.Height.toFixed(2)}</li>
-                          </ul>
-                        </div>
-                        <div>Confidence: {instance.Confidence.toFixed(2)}%</div>
-                      </li>
-                    ))}
-                  </ul>
+      {annotatedImage && (
+        <div
+          style={{
+            position: 'relative',
+            display: 'inline-block',
+            maxWidth: '600px',
+            margin: '0 auto',
+            border: '1px solid #ccc',
+            borderRadius: '10px',
+            overflow: 'hidden',
+          }}
+        >
+          <img
+            src={`data:image/jpeg;base64,${annotatedImage}`}
+            alt="Annotated"
+            style={{
+              width: '100%',
+              display: 'block',
+            }}
+          />
+          {labels.map((label, index) =>
+            label.Instances.map((instance, i) => {
+              const bbox = instance.BoundingBox;
+              const left = bbox.Left * 100 + '%';
+              const top = bbox.Top * 100 + '%';
+              const width = bbox.Width * 100 + '%';
+              const height = bbox.Height * 100 + '%';
+
+              return (
+                <div
+                  key={`${index}-${i}`}
+                  style={{
+                    position: 'absolute',
+                    left,
+                    top,
+                    width,
+                    height,
+                    border: '2px solid red',
+                    boxSizing: 'border-box',
+                    pointerEvents: 'none',
+                  }}
+                >
+                  <span
+                    style={{
+                      position: 'absolute',
+                      top: '-1.5em',
+                      left: '0',
+                      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                      color: 'red',
+                      fontSize: '0.75em',
+                      padding: '2px 4px',
+                      borderRadius: '3px',
+                      pointerEvents: 'none',
+                    }}
+                  >
+                    {label.Name} ({label.Confidence.toFixed(2)}%)
+                  </span>
                 </div>
-              ) : (
-                <p></p>
-              )}
-              {label.Parents.length > 0 ? (
-                <div>
-                  <strong>Parents:</strong>
-                  <ul>
-                    {label.Parents.map((parent, j) => (
-                      <li key={j}>{parent.Name}</li>
-                    ))}
-                  </ul>
-                </div>
-              ) : (
-                <p>No parent labels available.</p>
-              )}
-            </li>
-          ))}
-        </ul>
+              );
+            })
+          )}
+        </div>
       )}
+      {labels.length === 0 && <p style={{ marginTop: '1rem' }}>No labels detected.</p>}
     </div>
   );
 };
